@@ -12,6 +12,7 @@ Central index for all homelab documentation. Start here.
 - [[groupme_exporter]] — GroupMe chat export tool
 - [[masters-league]] — Masters Tournament fantasy golf league viewer
 - [[shlink-ingress-controller]] — Kubernetes ingress controller for Shlink short links
+- [[homelab-obsidian-vault]] — this vault (git repo, vault structure, sync setup)
 
 ## Cross-repo
 

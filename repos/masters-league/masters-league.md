@@ -16,6 +16,8 @@ Masters Tournament leaderboard and scorecard viewer for a fantasy golf league.
 
 
 
+
+
 ## Unlisted Docs
 
 - [[repos/masters-league/docs/superpowers/plans/2026-04-11-scorecard-inline|Hole-by-Hole Scorecard Implementation Plan]]

@@ -17,6 +17,9 @@ The vault is a **living documentation layer** across all homelab repos. It is no
 Syncthing bridges the Linux vault to the Windows PC at:
 `C:\Users\Scott\Documents\Obsidian Vault\homelab`
 
+The vault is also a git repository tracked at [vollminlab/homelab-obsidian-vault](https://github.com/vollminlab/homelab-obsidian-vault).
+See [[homelab-infrastructure/docs/syncthing|Syncthing Setup]] for the full sync architecture and troubleshooting.
+
 ## Automation (runs every 5 minutes via cron)
 
 Two cron jobs run on `devsbx01`:

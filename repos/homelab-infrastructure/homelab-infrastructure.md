@@ -454,6 +454,9 @@ Terraform, VM provisioning, and network infrastructure configuration for the vol
 
 
 
+
+
 ## Unlisted Docs
 
+- [[repos/homelab-infrastructure/docs/syncthing|Syncthing Setup]]
 - [[repos/homelab-infrastructure/docs/credential-rotation|Credential Rotation Guide]]
