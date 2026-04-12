@@ -1,0 +1,5 @@
+# Obsidian app state — managed externally (enforce-graph-colors.sh, Obsidian itself)
+.obsidian/
+
+# Synced repo docs — derived content, lives in each repo's own git history
+repos/*/docs/

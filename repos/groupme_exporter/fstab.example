@@ -1,0 +1,8 @@
+# Example /etc/fstab entries for SMB mounting
+# Replace with your actual SMB server details
+
+# General SMB root mount
+//your-server.com/smb-generic /mnt/smb_root cifs credentials=/etc/smb-creds,vers=3.0,iocharset=utf8,noserverino,uid=youruser,gid=yourgroup,file_mode=0664,dir_mode=0775,_netdev,soft 0 0
+
+# GroupMe mount
+/mnt/smb_root/groupme_snapshots /mnt/groupme_snapshots none bind 0 0
