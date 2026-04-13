@@ -23,7 +23,7 @@ set -euo pipefail
 GRAPH_JSON="$HOME/obsidian/homelab/.obsidian/graph.json"
 
 GROUPS='[
-  {"query":"file:Home OR file:CLAUDE OR file:memory","color":{"a":1,"rgb":16766720}},
+  {"query":"path:Home.md OR path:CLAUDE.md OR path:memory.md","color":{"a":1,"rgb":16766720}},
   {"query":"path:repos/k8s-vollminlab-cluster/k8s-vollminlab-cluster OR path:repos/homelab-infrastructure/homelab-infrastructure OR path:repos/VMDeployTools/VMDeployTools OR path:repos/pihole-flask-api/pihole-flask-api OR path:repos/github-admin/github-admin OR path:repos/groupme_exporter/groupme_exporter OR path:repos/masters-league/masters-league OR path:repos/shlink-ingress-controller/shlink-ingress-controller OR path:repos/homelab-obsidian-vault/homelab-obsidian-vault","color":{"a":1,"rgb":16711680}},
   {"query":"path:repos/k8s-vollminlab-cluster/","color":{"a":1,"rgb":2062260}},
   {"query":"path:repos/homelab-infrastructure/","color":{"a":1,"rgb":2924588}},

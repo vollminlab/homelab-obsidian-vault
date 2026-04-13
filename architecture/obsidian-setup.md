@@ -38,7 +38,7 @@ Check color log: `tail -f ~/graph-colors.log`
 The graph uses a hub-and-spoke model:
 
 - **Home** (gold) — single central hub, links to all repo index files, cross-repo docs, and full infrastructure reference
-- **Repo index files** (colored by repo) — link up to Home, down to their docs
+- **Repo index files** (red) — link up to Home, down to their docs
 - **Docs/diagrams** (same color as their repo) — link back to their repo via `← [[repo-name]]`
 - **architecture/, roadmap/, runbooks/, diagrams/** (brown, same as homelab-obsidian-vault) — cross-repo docs owned by the vault repo
 
