@@ -1,5 +1,7 @@
 # Disaster Recovery
 
+← [[homelab-obsidian-vault]]
+
 Cross-repo recovery procedures for full or partial homelab failure.
 
 ## Boot order after full power loss

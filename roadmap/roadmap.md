@@ -1,5 +1,7 @@
 # Roadmap
 
+← [[homelab-obsidian-vault]]
+
 ← [[Home]]
 
 ## Active / next up

@@ -1,5 +1,7 @@
 # Obsidian Vault Setup
 
+← [[homelab-obsidian-vault]]
+
 How the vollminlab Obsidian vault is structured, synced, and kept consistent. Read this before adding a new repo.
 
 ## Overview
