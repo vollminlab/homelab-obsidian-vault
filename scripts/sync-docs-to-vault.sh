@@ -3,7 +3,8 @@
 # Source of truth: ~/repos/vollminlab/<repo>/docs/
 # Destination:     ~/obsidian/homelab/repos/<repo>/docs/
 #
-# Vault-native files (<repo>.md) are never touched by this script.
+# Vault-native structure (architecture/, roadmap/, runbooks/) is owned by
+# the homelab-obsidian-vault repo and synced directly into the vault root.
 # Each synced .md file gets a ← [[repo]] backlink prepended for Obsidian graph.
 # Any doc not listed in the repo index file is appended automatically.
 
@@ -11,6 +12,8 @@ set -euo pipefail
 
 REPOS_DIR="$HOME/repos/vollminlab"
 VAULT_DIR="$HOME/obsidian/homelab/repos"
+VAULT_ROOT="$HOME/obsidian/homelab"
+SELF_REPO="$REPOS_DIR/homelab-obsidian-vault"
 
 repos=(
   k8s-vollminlab-cluster
@@ -51,8 +54,7 @@ inject_backlink() {
   heading_line=$(grep -n "^#" "$file" | head -1 | cut -d: -f1 || echo "0")
 
   if [ "$heading_line" -gt 0 ]; then
-    awk -v line="$heading_line" -v link="← [[$repo]]" \
-      'NR==line{print; print ""; print link; next}1' "$file" > "$tmp"
+    awk -v line="$heading_line" -v link="← [[$repo]]"       'NR==line{print; print ""; print link; next}1' "$file" > "$tmp"
   else
     { echo "← [[$repo]]"; echo ""; cat "$file"; } > "$tmp"
   fi
@@ -102,6 +104,21 @@ update_index() {
     echo "- [[$rel_path|$title]]" >> "$index"
   done
 }
+
+# Sync vault-native structure from this repo into the vault root
+vault_native_dirs=(architecture roadmap runbooks)
+for dir in "${vault_native_dirs[@]}"; do
+  if [ -d "$SELF_REPO/$dir" ]; then
+    mkdir -p "$VAULT_ROOT/$dir"
+    rsync -a --delete "$SELF_REPO/$dir/" "$VAULT_ROOT/$dir/"
+    echo "✓ $dir (vault-native, from homelab-obsidian-vault repo)"
+  fi
+done
+
+# Sync top-level vault files from this repo
+for f in Home.md CLAUDE.md; do
+  [ -f "$SELF_REPO/$f" ] && cp "$SELF_REPO/$f" "$VAULT_ROOT/$f"
+done
 
 for repo in "${repos[@]}"; do
   src="$REPOS_DIR/$repo/docs"
