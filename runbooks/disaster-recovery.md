@@ -1,7 +1,5 @@
 # Disaster Recovery
 
-← [[Home]]
-
 Cross-repo recovery procedures for full or partial homelab failure.
 
 ## Boot order after full power loss
@@ -11,7 +9,7 @@ Bring systems up in dependency order:
 1. **TrueNAS** — NFS/iSCSI backing for ESXi datastores
 2. **ESXi hosts** — hypervisors hosting all VMs
 3. **pihole1 + pihole2** — DNS must resolve before anything else
-4. **k8smaster01** — control plane
+4. **k8scp01, k8scp02, k8scp03** — control plane nodes
 5. **k8sworker01–04** — workload nodes
 6. **k8sworker05 + k8sworker06** — DMZ nodes
 7. Flux reconciles workloads automatically within ~10 min
