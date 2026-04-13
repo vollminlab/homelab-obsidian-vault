@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Sync repo docs/ folders into the Obsidian vault mirror
-# Source of truth: ~/repos/vollminlab/<repo>/docs/
-# Destination:     ~/obsidian/homelab/repos/<repo>/docs/
+# Sync repo docs/ and diagrams/ folders into the Obsidian vault mirror
+# Source of truth: ~/repos/vollminlab/<repo>/docs/ and ~/repos/vollminlab/<repo>/diagrams/
+# Destination:     ~/obsidian/homelab/repos/<repo>/docs| diagrams/
 #
-# Vault-native structure (architecture/, roadmap/, runbooks/) is owned by
+# Vault-native structure (architecture/, roadmap/, runbooks/, diagrams/) is owned by
 # the homelab-obsidian-vault repo and synced directly into the vault root.
-# Each synced .md file gets a ← [[repo]] backlink prepended for Obsidian graph.
+# Each synced .md file gets a backlink prepended for Obsidian graph.
 # Any doc not listed in the repo index file is appended automatically.
 
 set -euo pipefail
@@ -54,7 +54,8 @@ inject_backlink() {
   heading_line=$(grep -n "^#" "$file" | head -1 | cut -d: -f1 || echo "0")
 
   if [ "$heading_line" -gt 0 ]; then
-    awk -v line="$heading_line" -v link="← [[$repo]]"       'NR==line{print; print ""; print link; next}1' "$file" > "$tmp"
+    awk -v line="$heading_line" -v link="← [[$repo]]" \
+      'NR==line{print; print ""; print link; next}1' "$file" > "$tmp"
   else
     { echo "← [[$repo]]"; echo ""; cat "$file"; } > "$tmp"
   fi
@@ -106,11 +107,15 @@ update_index() {
 }
 
 # Sync vault-native structure from this repo into the vault root
-vault_native_dirs=(architecture roadmap runbooks)
+vault_native_dirs=(architecture roadmap runbooks diagrams)
 for dir in "${vault_native_dirs[@]}"; do
   if [ -d "$SELF_REPO/$dir" ]; then
     mkdir -p "$VAULT_ROOT/$dir"
     rsync -a --delete "$SELF_REPO/$dir/" "$VAULT_ROOT/$dir/"
+    # Inject homelab-obsidian-vault backlinks into .md files
+    while IFS= read -r -d '' f; do
+      inject_backlink "$f" "homelab-obsidian-vault"
+    done < <(find "$VAULT_ROOT/$dir" -name "*.md" -print0)
     echo "✓ $dir (vault-native, from homelab-obsidian-vault repo)"
   fi
 done
@@ -158,9 +163,21 @@ PYEOF
     # Add any docs not yet listed in the repo index
     update_index "$repo" "$dst"
 
-    echo "✓ $repo"
+    echo "✓ $repo (docs)"
   else
     echo "- $repo (no docs/ folder, skipping)"
+  fi
+
+  # Sync diagrams/ if present
+  diag_src="$REPOS_DIR/$repo/diagrams"
+  diag_dst="$VAULT_DIR/$repo/diagrams"
+  if [ -d "$diag_src" ]; then
+    mkdir -p "$diag_dst"
+    rsync -a --delete "$diag_src/" "$diag_dst/" 2>/dev/null || true
+    while IFS= read -r -d '' f; do
+      inject_backlink "$f" "$repo"
+    done < <(find "$diag_dst" -name "*.md" -print0)
+    echo "✓ $repo (diagrams)"
   fi
 done
 

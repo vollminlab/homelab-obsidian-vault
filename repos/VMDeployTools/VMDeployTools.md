@@ -31,4 +31,4 @@ Remove-VMDeployment -VMName "myserver01" -ClearOpAuthToken
 
 - On deploy: registers A record via pihole-flask-api, commits SSH config to homelab-infrastructure
 - Pester unit tests required to merge (enforced by github-admin)
-- See [[architecture/homelab-overview|Homelab Overview]] for integration map
+- See [[Home]] for integration map
