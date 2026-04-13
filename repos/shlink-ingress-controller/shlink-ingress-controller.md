@@ -6,7 +6,8 @@ Kubernetes ingress controller for Shlink short links (go.vollminlab.com).
 
 ## Docs
 
-<!-- Docs will appear here once synced from the repo -->
+- [[repos/shlink-ingress-controller/docs/superpowers/plans/helm-chart-gitops|Helm Chart & GitOps Deployment Implementation Plan]]
+- [[repos/shlink-ingress-controller/docs/superpowers/specs/helm-chart-gitops-design|Helm Chart & GitOps Deployment Design]]
 
 ## Key facts
 
