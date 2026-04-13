@@ -20,7 +20,7 @@
 
 set -euo pipefail
 
-GRAPH_JSON="$HOME/obsidian/homelab/.obsidian/graph.json"
+GRAPH_JSON="$HOME/repos/vollminlab/homelab-obsidian-vault/.obsidian/graph.json"
 
 GROUPS='[
   {"query":"path:Home.md OR path:CLAUDE.md OR path:memory.md","color":{"a":1,"rgb":16766720}},

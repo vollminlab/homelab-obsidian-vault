@@ -9,13 +9,15 @@ The vault is a **living documentation layer** across all homelab repos. It is no
 ```
 ~/repos/vollminlab/<repo>/docs/      ← source of truth for repo docs (edit here)
 ~/repos/vollminlab/<repo>/diagrams/  ← source of truth for repo diagrams (edit here)
-~/obsidian/homelab/repos/<repo>/     ← vault mirror (generated, never edit directly)
+~/repos/vollminlab/homelab-obsidian-vault/repos/<repo>/docs|diagrams/
+                                     ← vault mirror (generated, never edit directly)
 ~/repos/vollminlab/homelab-obsidian-vault/architecture|roadmap|runbooks|diagrams/
                                      ← vault-native cross-repo docs (edit in repo, commit)
 ```
 
-Syncthing bridges the Linux vault to the Windows PC at:
+The repo IS the vault. Syncthing syncs the repo directly to Windows at:
 `C:\Users\Scott\Documents\Obsidian Vault\homelab`
+`.git/` is excluded from sync via `.stignore`. Mirrored docs (`repos/*/docs/`, `repos/*/diagrams/`) are gitignored but synced by Syncthing.
 
 The vault is tracked as a git repo at [vollminlab/homelab-obsidian-vault](https://github.com/vollminlab/homelab-obsidian-vault).
 See [[homelab-infrastructure/docs/syncthing|Syncthing Setup]] for the full sync architecture and troubleshooting.
