@@ -53,13 +53,16 @@ Repo colors are enforced by `scripts/enforce-graph-colors.sh`. Obsidian stores t
 | k8s-vollminlab-cluster | Steel Blue | #1F77B4 |
 | homelab-infrastructure | Green | #2CA02C |
 | VMDeployTools | Orange | #FF7F0E |
-| pihole-flask-api | Purple | #9467BD |
-| github-admin | Red | #D62728 |
+| pihole-flask-api | Brown | #795548 |
+| github-admin | Teal | #00897B |
 | groupme_exporter | Cyan | #17BECF |
-| masters-league | Brown | #CD853F |
-| shlink-ingress-controller | Pink | #FF6347 |
-| homelab-obsidian-vault + vault-native dirs | Brown | #8C564B |
-| Home / meta | Gold | #FFD700 |
+| masters-league | Amber | #F9A825 |
+| shlink-ingress-controller | Pink | #EC407A |
+| homelab-obsidian-vault + vault-native dirs | Deep Purple | #9C27B0 |
+| Home / CLAUDE / memory | Gold | #FFD700 |
+| **Repo index files (all repos)** | **Red** | **#FF0000** |
+
+The repo index file group is last — it overrides path-based colors for parent nodes only, giving a clear gold → red → colored hierarchy in the graph.
 
 ## Filename collision rules
 
