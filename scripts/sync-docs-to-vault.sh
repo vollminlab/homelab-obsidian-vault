@@ -11,9 +11,9 @@
 set -euo pipefail
 
 REPOS_DIR="$HOME/repos/vollminlab"
-VAULT_DIR="$HOME/obsidian/homelab/repos"
-VAULT_ROOT="$HOME/obsidian/homelab"
 SELF_REPO="$REPOS_DIR/homelab-obsidian-vault"
+VAULT_ROOT="$SELF_REPO"
+VAULT_DIR="$SELF_REPO/repos"
 
 repos=(
   k8s-vollminlab-cluster
@@ -100,38 +100,21 @@ update_index() {
     local short_name title rel_path
     short_name=$(basename "$doc_file" .md)
     title=$(get_title "$doc_file")
-    rel_path=$(realpath --relative-to="$HOME/obsidian/homelab" "$doc_file" | sed 's/\.md$//')
+    rel_path=$(realpath --relative-to="$VAULT_ROOT" "$doc_file" | sed 's/\.md$//')
     echo "Adding unlisted doc to index: $short_name → $repo"
     echo "- [[$rel_path|$title]]" >> "$index"
   done
 }
 
-# Sync vault-native structure from this repo into the vault root
+# vault-native dirs, top-level files, and repo index files are already in the repo root
+# (repo IS the vault) — inject backlinks in place but skip any copy steps
 vault_native_dirs=(architecture roadmap runbooks diagrams)
 for dir in "${vault_native_dirs[@]}"; do
-  if [ -d "$SELF_REPO/$dir" ]; then
-    mkdir -p "$VAULT_ROOT/$dir"
-    rsync -a --delete "$SELF_REPO/$dir/" "$VAULT_ROOT/$dir/"
-    # Inject homelab-obsidian-vault backlinks into .md files
+  if [ -d "$VAULT_ROOT/$dir" ]; then
     while IFS= read -r -d '' f; do
       inject_backlink "$f" "homelab-obsidian-vault"
     done < <(find "$VAULT_ROOT/$dir" -name "*.md" -print0)
-    echo "✓ $dir (vault-native, from homelab-obsidian-vault repo)"
-  fi
-done
-
-# Sync top-level vault files from this repo
-for f in Home.md CLAUDE.md; do
-  [ -f "$SELF_REPO/$f" ] && cp "$SELF_REPO/$f" "$VAULT_ROOT/$f"
-done
-
-# Sync repo index files from this repo into the vault
-for repo in "${repos[@]}"; do
-  index_src="$SELF_REPO/repos/$repo/$repo.md"
-  index_dst="$VAULT_DIR/$repo/$repo.md"
-  if [ -f "$index_src" ]; then
-    mkdir -p "$VAULT_DIR/$repo"
-    cp "$index_src" "$index_dst"
+    echo "✓ $dir (vault-native, in-place)"
   fi
 done
 
