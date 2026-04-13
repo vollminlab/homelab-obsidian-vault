@@ -125,6 +125,16 @@ for f in Home.md CLAUDE.md; do
   [ -f "$SELF_REPO/$f" ] && cp "$SELF_REPO/$f" "$VAULT_ROOT/$f"
 done
 
+# Sync repo index files from this repo into the vault
+for repo in "${repos[@]}"; do
+  index_src="$SELF_REPO/repos/$repo/$repo.md"
+  index_dst="$VAULT_DIR/$repo/$repo.md"
+  if [ -f "$index_src" ]; then
+    mkdir -p "$VAULT_DIR/$repo"
+    cp "$index_src" "$index_dst"
+  fi
+done
+
 for repo in "${repos[@]}"; do
   src="$REPOS_DIR/$repo/docs"
   dst="$VAULT_DIR/$repo/docs"
