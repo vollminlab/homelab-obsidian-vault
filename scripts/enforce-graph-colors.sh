@@ -14,10 +14,9 @@ GROUPS='[
   {"query":"path:repos/pihole-flask-api/","color":{"a":1,"rgb":9725885}},
   {"query":"path:repos/github-admin/","color":{"a":1,"rgb":14034728}},
   {"query":"path:repos/groupme_exporter/","color":{"a":1,"rgb":1556175}},
-  {"query":"path:repos/masters-league/","color":{"a":1,"rgb":12369186}},
-  {"query":"path:repos/shlink-ingress-controller/","color":{"a":1,"rgb":14907330}},
-  {"query":"path:repos/homelab-obsidian-vault/","color":{"a":1,"rgb":9197131}},
-  {"query":"path:architecture/ OR path:roadmap/ OR path:runbooks/","color":{"a":1,"rgb":8355711}},
+  {"query":"path:repos/masters-league/","color":{"a":1,"rgb":13468991}},
+  {"query":"path:repos/shlink-ingress-controller/","color":{"a":1,"rgb":16737095}},
+  {"query":"path:repos/homelab-obsidian-vault/ OR path:architecture/ OR path:roadmap/ OR path:runbooks/ OR path:diagrams/","color":{"a":1,"rgb":9197131}},
   {"query":"file:Home OR file:CLAUDE OR file:memory","color":{"a":1,"rgb":16766720}}
 ]'
 
@@ -25,7 +24,7 @@ GROUPS='[
 # (Obsidian resets it to the integer 1000 when it overwrites the file)
 current_count=$(jq 'if (.colorGroups | type) == "array" then (.colorGroups | length) else 0 end' "$GRAPH_JSON" 2>/dev/null || echo 0)
 
-if [ "$current_count" -lt 11 ]; then
+if [ "$current_count" -lt 10 ]; then
   tmp=$(mktemp)
   jq --argjson groups "$GROUPS" '.colorGroups = $groups' "$GRAPH_JSON" > "$tmp"
   mv "$tmp" "$GRAPH_JSON"

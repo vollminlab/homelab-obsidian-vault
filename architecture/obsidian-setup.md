@@ -1,7 +1,5 @@
 # Obsidian Vault Setup
 
-← [[Home]]
-
 How the vollminlab Obsidian vault is structured, synced, and kept consistent. Read this before adding a new repo.
 
 ## Overview
@@ -9,25 +7,27 @@ How the vollminlab Obsidian vault is structured, synced, and kept consistent. Re
 The vault is a **living documentation layer** across all homelab repos. It is not a wiki you edit directly — it is generated from the repos and kept in sync automatically.
 
 ```
-~/repos/vollminlab/<repo>/docs/   ← source of truth (edit here)
-~/obsidian/homelab/repos/<repo>/  ← vault mirror (generated, never edit directly)
-~/obsidian/homelab/               ← vault-native docs (edit here)
+~/repos/vollminlab/<repo>/docs/      ← source of truth for repo docs (edit here)
+~/repos/vollminlab/<repo>/diagrams/  ← source of truth for repo diagrams (edit here)
+~/obsidian/homelab/repos/<repo>/     ← vault mirror (generated, never edit directly)
+~/repos/vollminlab/homelab-obsidian-vault/architecture|roadmap|runbooks|diagrams/
+                                     ← vault-native cross-repo docs (edit in repo, commit)
 ```
 
 Syncthing bridges the Linux vault to the Windows PC at:
 `C:\Users\Scott\Documents\Obsidian Vault\homelab`
 
-The vault is also a git repository tracked at [vollminlab/homelab-obsidian-vault](https://github.com/vollminlab/homelab-obsidian-vault).
+The vault is tracked as a git repo at [vollminlab/homelab-obsidian-vault](https://github.com/vollminlab/homelab-obsidian-vault).
 See [[homelab-infrastructure/docs/syncthing|Syncthing Setup]] for the full sync architecture and troubleshooting.
 
 ## Automation (runs every 5 minutes via cron)
 
-Two cron jobs run on `devsbx01`:
+Both scripts live in the repo at `scripts/` and are referenced by cron via their full repo path.
 
 | Script | What it does |
 | --- | --- |
-| `~/sync-docs-to-vault.sh` | Rsyncs each repo's `docs/` into the vault, renames collision filenames, strips `../` ghost links, injects `← [[repo]]` backlinks |
-| `~/enforce-graph-colors.sh` | Ensures graph.json always has the repo color groups — re-applies if Obsidian overwrites them |
+| `scripts/sync-docs-to-vault.sh` | Rsyncs each repo's `docs/` and `diagrams/` into the vault, renames collision filenames, strips `../` ghost links, injects backlinks, syncs vault-native dirs from repo |
+| `scripts/enforce-graph-colors.sh` | Ensures graph.json always has the repo color groups — re-applies if Obsidian resets them |
 
 Check cron: `crontab -l`
 Check sync log: `tail -f ~/sync-docs.log`
@@ -37,34 +37,35 @@ Check color log: `tail -f ~/graph-colors.log`
 
 The graph uses a hub-and-spoke model:
 
-- **Home** (gold) — central hub, links to all repo index files and cross-repo docs
+- **Home** (gold) — single central hub, links to all repo index files, cross-repo docs, and full infrastructure reference
 - **Repo index files** (colored by repo) — link up to Home, down to their docs
-- **Docs** (same color as their repo) — link back to their repo via `← [[repo-name]]`
-- **homelab-overview** (grey) — cross-repo integration map, connects to all repos
-- **disaster-recovery, roadmap, architecture** (grey) — cross-repo/org-level docs
+- **Docs/diagrams** (same color as their repo) — link back to their repo via `← [[repo-name]]`
+- **architecture/, roadmap/, runbooks/, diagrams/** (brown, same as homelab-obsidian-vault) — cross-repo docs owned by the vault repo
 
-Cross-repo wikilinks between repo indexes are intentionally avoided — they collapse the graph. All cross-repo integration info lives in [[architecture/homelab-overview|Homelab Overview]] instead.
+Cross-repo wikilinks between repo index files are intentionally avoided — they collapse the graph. All cross-repo integration info lives in [[Home]] instead.
 
 ## Graph colors
 
-Repo colors are enforced by `~/enforce-graph-colors.sh`. Obsidian stores them in `.obsidian/graph.json`. Since Obsidian overwrites this file on every interaction, the cron job re-applies them if they get wiped.
+Repo colors are enforced by `scripts/enforce-graph-colors.sh`. Obsidian stores them in `.obsidian/graph.json`. Since Obsidian resets this file on every interaction, the cron job re-applies them if they get wiped.
 
 | Repo | Color | Hex |
 | --- | --- | --- |
-| k8s-vollminlab-cluster | Blue | #4169E1 |
-| homelab-infrastructure | Green | #228B22 |
-| VMDeployTools | Orange | #FF8C00 |
-| pihole-flask-api | Purple | #9932CC |
-| github-admin | Red | #DC143C |
-| groupme_exporter | Teal | #20B2AA |
-| Cross-repo docs | Silver | #C0C0C0 |
+| k8s-vollminlab-cluster | Steel Blue | #1F77B4 |
+| homelab-infrastructure | Green | #2CA02C |
+| VMDeployTools | Orange | #FF7F0E |
+| pihole-flask-api | Purple | #9467BD |
+| github-admin | Red | #D62728 |
+| groupme_exporter | Cyan | #17BECF |
+| masters-league | Brown | #CD853F |
+| shlink-ingress-controller | Pink | #FF6347 |
+| homelab-obsidian-vault + vault-native dirs | Brown | #8C564B |
 | Home / meta | Gold | #FFD700 |
 
 ## Filename collision rules
 
 Obsidian resolves wikilinks by short filename. If two repos have a doc with the same name (e.g. `architecture.md`), one creates a ghost node. The sync script renames collisions on the way in.
 
-Current rename map (in `~/sync-docs-to-vault.sh`):
+Current rename map (in `scripts/sync-docs-to-vault.sh`):
 
 | Original | Renamed to |
 | --- | --- |
@@ -82,13 +83,13 @@ When a new doc's filename collides with an existing one, add an entry to the `re
 
 ## Adding a new repo — full checklist
 
-### 1. Create a `docs/` folder in the repo
+### 1. Create `docs/` and optionally `diagrams/` in the repo
 
-All documentation goes in `<repo>/docs/`. The sync script only mirrors `docs/` — nothing else is touched.
+All documentation goes in `<repo>/docs/`. Diagrams (Excalidraw, etc.) go in `<repo>/diagrams/`. The sync script mirrors both — nothing else is touched.
 
-Any doc named the same as an existing doc across repos (e.g. `architecture.md`, `operations.md`, `overview.md`) must be added to the rename map.
+Any doc named the same as an existing doc across repos must be added to the rename map.
 
-### 2. Add the repo to `~/sync-docs-to-vault.sh`
+### 2. Add the repo to `scripts/sync-docs-to-vault.sh`
 
 ```bash
 repos=(
@@ -104,7 +105,7 @@ If any docs need renaming, add to the `renames` array:
 
 ### 3. Create the vault index file
 
-Create `~/obsidian/homelab/repos/<new-repo-name>/<new-repo-name>.md`:
+Create `repos/<new-repo-name>/<new-repo-name>.md` in this repo:
 
 ```markdown
 # new-repo-name
@@ -120,12 +121,12 @@ One-line description of what this repo does.
 ## Key facts
 
 - Key operational facts in plain text (no cross-repo wikilinks)
-- See [[architecture/homelab-overview|Homelab Overview]] for integration map
+- See [[Home]] for integration map
 ```
 
 ### 4. Link from Home.md
 
-Add to `~/obsidian/homelab/Home.md`:
+Add to `Home.md` in this repo:
 ```markdown
 - [[new-repo-name]] — brief description
 ```
@@ -137,25 +138,25 @@ Pick a hex color not already in use, get its decimal value:
 python3 -c "print(int('FF6347', 16))"
 ```
 
-Add to `~/enforce-graph-colors.sh`:
+Add to `scripts/enforce-graph-colors.sh`:
 ```json
 {"query":"path:repos/new-repo-name/","color":{"a":1,"rgb":DECIMAL}},
 ```
 
 Increment the threshold check:
 ```bash
-if [ "$current_count" -lt 9 ]; then   # was 8, now 9
+if [ "$current_count" -lt 11 ]; then   # was 10, now 11
 ```
 
-### 6. Update homelab-overview if the repo has runtime integrations
+### 6. Update Home.md integration map if the repo has runtime integrations
 
-If the new repo calls or is called by other repos at runtime, add a row to the integration map table in [[architecture/homelab-overview|Homelab Overview]].
+If the new repo calls or is called by other repos at runtime, add a row to the integration map table in [[Home]].
 
-### 7. Run sync manually to verify
+### 7. Commit, PR, merge — then run sync manually to verify
 
 ```bash
-~/sync-docs-to-vault.sh
-~/enforce-graph-colors.sh
+~/repos/vollminlab/homelab-obsidian-vault/scripts/sync-docs-to-vault.sh
+~/repos/vollminlab/homelab-obsidian-vault/scripts/enforce-graph-colors.sh
 ```
 
 Check the vault: docs should appear under `repos/new-repo-name/docs/`, each with a `← [[new-repo-name]]` backlink.
@@ -164,5 +165,4 @@ Check the vault: docs should appear under `repos/new-repo-name/docs/`, each with
 
 - **Never add cross-repo wikilinks** inside synced docs — they collapse the graph. Use plain text for mentions of other repos.
 - **No `../` relative links** — the sync script strips them, but they create ghost nodes before the next sync.
-- **Standard markdown links to other docs in the same repo** (`[text](other-doc.md)`) are also stripped by the sync script if they use `../` paths. Use wikilinks for vault cross-references only in vault-native files.
 - The `← [[repo-name]]` backlink is injected automatically — do not add it manually to repo docs.

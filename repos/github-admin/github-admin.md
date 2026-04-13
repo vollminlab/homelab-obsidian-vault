@@ -23,5 +23,4 @@ Terraform-managed GitHub organization configuration for `vollminlab`. Branch pro
 
 - Self-hosted ARC runner in k8s-vollminlab-cluster (`actions-runner-system` namespace)
 - Terraform state: HCP Terraform Cloud
-- See [[architecture/homelab-overview|Homelab Overview]] for integration map
-
+- See [[Home]] for integration map

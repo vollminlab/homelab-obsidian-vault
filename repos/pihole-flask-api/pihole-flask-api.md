@@ -18,4 +18,4 @@ Flask/Gunicorn REST API for programmatic Pi-hole DNS record management. Runs on 
 - Always write to **both** hosts — no automatic replication
 - Callers: VMDeployTools (VM deploy), k8s-vollminlab-cluster external-dns (ingress A records)
 - Hardware documented in homelab-infrastructure
-- See [[architecture/homelab-overview|Homelab Overview]] for integration map
+- See [[Home]] for integration map
