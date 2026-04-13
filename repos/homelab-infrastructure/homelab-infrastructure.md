@@ -12,6 +12,8 @@ Terraform, VM provisioning, and network infrastructure configuration for the vol
 - [[repos/homelab-infrastructure/docs/pihole-hardware|Pi-hole Hardware]] — physical Pi-hole setup
 - [[repos/homelab-infrastructure/docs/pihole-tls|Pi-hole TLS]] — TLS certificate configuration for Pi-hole
 - [[repos/homelab-infrastructure/docs/ssh-setup|SSH Setup]] — SSH config, key management across admin machines
+- [[repos/homelab-infrastructure/docs/syncthing|Syncthing Setup]] — vault sync between devsbx01 and Windows
+- [[repos/homelab-infrastructure/docs/credential-rotation|Credential Rotation Guide]] — credential expiration tracking and rotation procedures
 
 ## Key facts
 
