@@ -29,9 +29,10 @@ Cross-session continuity log. Update at end of org-level vault sessions.
 - Sealed Secrets sealing key: backed up in 1Password as "Sealed Secrets Sealing Key" (Homelab vault)
 - GitHub PAT: 1Password item "Github-Org-PAT" — used for gh CLI, GitHub MCP
 - Syncthing: devsbx01 syncs vault at ~/repos/vollminlab/homelab-obsidian-vault to devices
-  - Laptop: configured (SyncTrayzor)
-  - Windows PC (vollminxps): NOT YET CONFIGURED — needs SyncTrayzor install + device pairing
-  - Intended flow: devsbx01 → Syncthing → Windows PC → Obsidian Sync → laptop + mobile
+  - vollminxps (laptop): currently active Syncthing peer — REMOVE once GLaDOS is set up
+  - GLaDOS (Windows PC, always on): NOT YET CONFIGURED — needs SyncTrayzor + device pairing
+  - devsbx01 device ID: LCMBZJE-WWJQ3MM-P7M37A2-QGOW777-NE67R72-BLXFRB7-O4IURUL-FR7ZJQO
+  - Intended flow: devsbx01 → Syncthing → GLaDOS → Obsidian Sync → vollminxps + mobile
 - DMZ nodes: k8sworker05 + k8sworker06 (taint: dmz=true:NoSchedule)
 
 ## Vault sync pipeline
