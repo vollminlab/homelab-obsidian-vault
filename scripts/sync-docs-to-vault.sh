@@ -104,14 +104,22 @@ update_index() {
   sed '/^## Unlisted Docs/,$d' "$index" | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' > "$tmp"
   mv "$tmp" "$index"
 
-  # Collect any docs not referenced in the (now clean) index
+  # Collect any docs not referenced in the (now clean) index.
+  #
+  # docs/superpowers/ is pruned deliberately. Those are completed implementation
+  # plans and design specs — archival records of finished work, not operational
+  # docs someone needs to find from an index. They remain in the vault, in the
+  # graph, and in search; they just don't earn an index entry. Before this prune
+  # the k8s index carried 40 unlisted entries, 34 of them superpowers plans/specs,
+  # which buried six real runbooks nobody had filed. The nag is only useful if a
+  # non-empty "Unlisted Docs" section actually means something needs filing.
   local unlisted=()
   while IFS= read -r -d '' doc_file; do
     local short_name
     short_name=$(basename "$doc_file" .md)
     grep -q "$short_name" "$index" 2>/dev/null && continue
     unlisted+=("$doc_file")
-  done < <(find "$dst" -name "*.md" -print0)
+  done < <(find "$dst" -path '*/superpowers/*' -prune -o -name "*.md" -print0)
 
   [ ${#unlisted[@]} -eq 0 ] && return 0
 
