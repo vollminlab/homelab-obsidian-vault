@@ -41,6 +41,7 @@ repos=(
   VMDeployTools
   masters-league
   shlink-ingress-controller
+  longhorn-rebalancing-controller
   homelab-obsidian-vault
 )
 
@@ -53,6 +54,7 @@ declare -A renames=(
   ["VMDeployTools/docs/configuration.md"]="vmdeploytools-configuration.md"
   ["VMDeployTools/docs/operations.md"]="vmdeploytools-operations.md"
   ["github-admin/docs/overview.md"]="github-admin-overview.md"
+  ["longhorn-rebalancing-controller/docs/overview.md"]="longhorn-rebalancing-controller-overview.md"
   ["github-admin/docs/adding-repos.md"]="github-admin-adding-repos.md"
   ["groupme_exporter/docs/architecture.md"]="groupme-architecture.md"
   ["k8s-vollminlab-cluster/docs/roadmap.md"]="cluster-roadmap.md"

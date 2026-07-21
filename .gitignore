@@ -7,3 +7,6 @@
 # Synced repo docs/diagrams — derived content, lives in each repo's own git history
 repos/*/docs/
 repos/*/diagrams/
+
+# Git worktrees — isolated workspaces, never vault content
+.worktrees/
