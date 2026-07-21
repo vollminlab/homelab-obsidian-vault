@@ -85,6 +85,70 @@ get_title() {
   grep -m1 "^#" "$file" | sed 's/^#\+[[:space:]]*//' || basename "$file" .md
 }
 
+# Fast-forward a repo to its upstream before its docs get mirrored.
+#
+# Without this the vault mirrors whatever happens to be checked out on this
+# host, which drifts from origin silently: a doc merged upstream never reaches
+# the vault until someone pulls that repo by hand, and nothing anywhere says so.
+#
+# Deliberately fetch + `merge --ff-only` rather than `git pull`. A fast-forward
+# is the only outcome safe to run unattended every five minutes. Every other
+# situation — dirty tree, detached HEAD, no upstream, diverged history — is
+# reported and then left exactly as it was. This script mirrors docs; it does
+# not get to modify anyone's working state to do so. In those cases the sync
+# still runs against whatever is on disk, which is the old behaviour.
+#
+# GIT_TERMINAL_PROMPT=0 matters: under cron there is no TTY, and a credential
+# prompt would hang the run forever instead of failing.
+pull_or_report() {
+  local repo="$1" dir="$REPOS_DIR/$repo"
+  local branch upstream err
+
+  [ -d "$dir/.git" ] || return 0
+
+  branch=$(git -C "$dir" branch --show-current 2>/dev/null || true)
+  if [ -z "$branch" ]; then
+    echo "⚠ $repo — detached HEAD, not pulling (mirroring on-disk docs)" >&2
+    return 0
+  fi
+
+  # --untracked-files=no is load-bearing. Plain --porcelain counts untracked
+  # files, so one stray scratch directory would park a repo on whatever commit
+  # it happened to be on and never sync it again — silently, which is the exact
+  # failure this function exists to prevent. Untracked files cannot be lost to a
+  # fast-forward anyway: if one would be overwritten, git refuses and the
+  # --ff-only branch below reports it.
+  if [ -n "$(git -C "$dir" status --porcelain --untracked-files=no 2>/dev/null || true)" ]; then
+    echo "⚠ $repo — uncommitted tracked changes, not pulling (mirroring on-disk docs)" >&2
+    return 0
+  fi
+
+  if ! upstream=$(git -C "$dir" rev-parse --abbrev-ref "$branch@{upstream}" 2>/dev/null); then
+    echo "⚠ $repo — branch '$branch' has no upstream, not pulling" >&2
+    return 0
+  fi
+
+  if ! err=$(GIT_TERMINAL_PROMPT=0 git -C "$dir" fetch --quiet origin 2>&1); then
+    echo "✗ $repo — git fetch FAILED: $err" >&2
+    sync_failed=1
+    return 0
+  fi
+
+  if ! err=$(git -C "$dir" merge --ff-only --quiet "$upstream" 2>&1); then
+    echo "✗ $repo — cannot fast-forward to $upstream, left untouched: $err" >&2
+    sync_failed=1
+    return 0
+  fi
+
+  # A feature branch fast-forwards perfectly well, but its docs are unmerged
+  # work — worth saying out loud, since the vault will present them as current.
+  if [ "$branch" != "main" ] && [ "$branch" != "master" ]; then
+    echo "⚠ $repo — on branch '$branch', vault will mirror unmerged docs" >&2
+  fi
+
+  return 0
+}
+
 # Rebuild the "## Unlisted Docs" section in the repo index file.
 # Strips the previous section, then re-adds any docs not listed in the main content.
 update_index() {
@@ -147,7 +211,27 @@ for dir in "${vault_native_dirs[@]}"; do
   fi
 done
 
+# The vault repo is never fast-forwarded automatically (see the loop below), but
+# it still falls behind origin after a PR merge — so at least say so out loud.
+if GIT_TERMINAL_PROMPT=0 git -C "$SELF_REPO" fetch --quiet origin 2>/dev/null; then
+  behind=$(git -C "$SELF_REPO" rev-list --count "HEAD..@{upstream}" 2>/dev/null || echo 0)
+  if [ "${behind:-0}" -gt 0 ]; then
+    echo "⚠ homelab-obsidian-vault — $behind commit(s) behind origin; pull the vault repo by hand" >&2
+  fi
+fi
+
 for repo in "${repos[@]}"; do
+  # Refresh from origin before mirroring, so the vault reflects what was merged
+  # rather than what happens to be checked out on this host.
+  #
+  # The vault repo is excluded on purpose: this script lives inside it, and bash
+  # reads a script incrementally while running it, so fast-forwarding it
+  # mid-execution can change the file underneath the running interpreter. It is
+  # pulled by hand after a merge; the check above flags when that is due.
+  if [ "$repo" != "homelab-obsidian-vault" ]; then
+    pull_or_report "$repo"
+  fi
+
   src="$REPOS_DIR/$repo/docs"
   dst="$VAULT_DIR/$repo/docs"
 
