@@ -11,7 +11,7 @@ Two cron jobs run every 5 minutes on `devsbx01`:
 | `scripts/sync-docs-to-vault.sh` | Rsyncs each repo's `docs/` into the vault, injects `← [[repo]]` backlinks, handles filename collision renames, appends unlisted docs to repo index files |
 | `scripts/enforce-graph-colors.sh` | Ensures Obsidian graph color groups are set correctly (Obsidian resets them on every interaction) |
 
-Syncthing propagates vault changes from `devsbx01` (`~/obsidian/homelab/`) to Windows (`C:\Users\Scott\Documents\Obsidian Vault\homelab`) automatically.
+Syncthing propagates vault changes from `devsbx01` (`~/repos/vollminlab/homelab-obsidian-vault/`, the `homelab-vault` folder) to Windows (`C:\Users\Scott\Documents\Obsidian Vault\homelab`) automatically.
 
 ## Vault structure
 
@@ -36,6 +36,7 @@ memory.md              — cross-session continuity log
 | `github-admin` | GitHub org config, repos, teams |
 | `VMDeployTools` | VM deployment automation |
 | `shlink-ingress-controller` | Kubernetes ingress controller for Shlink |
+| `longhorn-rebalancing-controller` | Byte-aware Longhorn replica rebalancer |
 | `groupme_exporter` | GroupMe chat export tool |
 | `masters-league` | Fantasy sports league tools |
 
@@ -48,5 +49,5 @@ See `architecture/obsidian-setup.md` in the vault for the full checklist. Summar
 3. Create `repos/<repo>/<repo>.md` (vault index file)
 4. Add `[[new-repo]]` to `Home.md`
 5. Add a graph color entry to `scripts/enforce-graph-colors.sh` and bump the threshold
-6. Add runtime integrations to `architecture/homelab-overview.md` if applicable
+6. Add runtime integrations to the `Home.md` integration map if applicable
 7. Commit, PR, merge — next cron run picks it up automatically
