@@ -5,7 +5,7 @@
 This vault is the living documentation layer for the vollminlab homelab. It mirrors and synthesises documentation from all active repos.
 
 **Working directory for repo sessions:** `~/repos/vollminlab/<repo>/`
-**Vault root on Linux:** `~/obsidian/homelab/`
+**Vault root on Linux:** `~/repos/vollminlab/homelab-obsidian-vault/` — this git repo *is* the live vault
 **Synced to Windows:** `C:\Users\Scott\Documents\Obsidian Vault\homelab`
 
 ## Repos
@@ -20,6 +20,7 @@ This vault is the living documentation layer for the vollminlab homelab. It mirr
 | `groupme_exporter` | GroupMe chat export tool | `docs/` |
 | `masters-league` | Fantasy golf league tools | `docs/` |
 | `shlink-ingress-controller` | K8s ingress controller for Shlink | `docs/` |
+| `longhorn-rebalancing-controller` | Byte-aware Longhorn replica rebalancer | `docs/` |
 | `homelab-obsidian-vault` | This vault | `scripts/`, `architecture/`, `roadmap/`, `runbooks/`, `diagrams/` |
 
 ## Vault structure
@@ -95,7 +96,7 @@ Incidents are the only exception: the date in the filename is the primary identi
 
 ## Hard constraints
 
-- Never commit vault files into repo git history — vault lives outside repos
+- Never commit vault content into another repo's git history — vault content lives in this repo only
 - `repos/<repo>/docs/` and `repos/<repo>/diagrams/` in the vault are mirrors only — never edit directly
 - `architecture/`, `roadmap/`, `runbooks/`, `diagrams/`, and `repos/<repo>/<repo>.md` are vault-native — source of truth is this repo
 - Never add cross-repo wikilinks inside synced repo docs — they collapse the graph
@@ -108,4 +109,4 @@ Incidents are the only exception: the date in the filename is the primary identi
 - Cluster is production (vollminlab.com) — treat all changes as prod
 - K8s cluster uses Flux CD GitOps — all cluster changes go through PRs
 - External DNS backed by shared Pi-hole — `upsert-only` policy enforced, never `sync`
-- Current focus: observability stack (post-optimization, pre-Cilium migration)
+- Current focus lives in [[roadmap/roadmap|Roadmap]] — check there rather than restating it here, so it cannot go stale

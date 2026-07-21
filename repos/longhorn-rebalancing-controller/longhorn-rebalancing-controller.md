@@ -23,4 +23,4 @@ Custom Go controller that evicts Longhorn replicas to rebalance storage **bytes*
 
 Rebalancing appears to **relocate** the hot node rather than flatten it — the hot spot moved w04 → w03 while w01 sat flat. Working theory is that large anchored volumes (MinIO, VictoriaMetrics long-term) chase whichever node is currently emptiest, so evicting from the hot node just recreates the imbalance elsewhere. Currently hands-off and under observation; not yet confirmed.
 
-See [[architecture/homelab-overview|Homelab Overview]] for the integration map.
+See [[Home]] for integration map.
