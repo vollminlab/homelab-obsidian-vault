@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sync repo docs/ and diagrams/ folders into the Obsidian vault mirror
 # Source of truth: ~/repos/vollminlab/<repo>/docs/ and ~/repos/vollminlab/<repo>/diagrams/
-# Destination:     ~/obsidian/homelab/repos/<repo>/docs| diagrams/
+# Destination:     ~/repos/vollminlab/homelab-obsidian-vault/repos/<repo>/docs| diagrams/
 #
 # Vault-native structure (architecture/, roadmap/, runbooks/, diagrams/) is owned by
 # the homelab-obsidian-vault repo and synced directly into the vault root.
@@ -14,6 +14,23 @@ REPOS_DIR="$HOME/repos/vollminlab"
 SELF_REPO="$REPOS_DIR/homelab-obsidian-vault"
 VAULT_ROOT="$SELF_REPO"
 VAULT_DIR="$SELF_REPO/repos"
+
+# Set by rsync_or_report on any copy failure; drives the script's exit status so
+# a broken sync is visible in the cron log instead of silently reporting success.
+sync_failed=0
+
+# rsync wrapper that reports failures instead of swallowing them. Deliberately
+# does not abort the run (set -e is on) — one unreadable repo should not stop
+# every later repo from syncing.
+rsync_or_report() {
+  local label="$1" src="$2" dst="$3" err
+  if ! err=$(rsync -a --delete "$src" "$dst" 2>&1); then
+    echo "✗ $label — rsync FAILED: $err" >&2
+    sync_failed=1
+    return 1
+  fi
+  return 0
+}
 
 repos=(
   k8s-vollminlab-cluster
@@ -77,10 +94,14 @@ update_index() {
 
   [ -f "$index" ] || return 0
 
-  # Strip previous Unlisted Docs section (everything from the header to EOF)
+  # Strip previous Unlisted Docs section (everything from the header to EOF),
+  # then strip trailing blank lines. The blank-line strip is load-bearing: the
+  # append below emits a leading newline before the header, and the sed above
+  # only deletes from the header onward — so without this, every run leaks one
+  # blank line at EOF. At a 5-minute cron cadence that is 288 lines/day.
   local tmp
   tmp=$(mktemp)
-  sed '/^## Unlisted Docs/,$d' "$index" > "$tmp"
+  sed '/^## Unlisted Docs/,$d' "$index" | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' > "$tmp"
   mv "$tmp" "$index"
 
   # Collect any docs not referenced in the (now clean) index
@@ -124,7 +145,8 @@ for repo in "${repos[@]}"; do
 
   if [ -d "$src" ]; then
     mkdir -p "$dst"
-    rsync -a --delete "$src/" "$dst/" 2>/dev/null || true
+    rsync_ok=1
+    rsync_or_report "$repo (docs)" "$src/" "$dst/" || rsync_ok=0
 
     # Apply globally unique renames to avoid Obsidian graph filename collisions
     for src_rel in "${!renames[@]}"; do
@@ -156,7 +178,7 @@ PYEOF
     # Add any docs not yet listed in the repo index
     update_index "$repo" "$dst"
 
-    echo "✓ $repo (docs)"
+    if [ "$rsync_ok" -eq 1 ]; then echo "✓ $repo (docs)"; fi
   else
     echo "- $repo (no docs/ folder, skipping)"
   fi
@@ -166,13 +188,18 @@ PYEOF
   diag_dst="$VAULT_DIR/$repo/diagrams"
   if [ -d "$diag_src" ]; then
     mkdir -p "$diag_dst"
-    rsync -a --delete "$diag_src/" "$diag_dst/" 2>/dev/null || true
+    rsync_ok=1
+    rsync_or_report "$repo (diagrams)" "$diag_src/" "$diag_dst/" || rsync_ok=0
     while IFS= read -r -d '' f; do
       inject_backlink "$f" "$repo"
     done < <(find "$diag_dst" -name "*.md" -print0)
-    echo "✓ $repo (diagrams)"
+    if [ "$rsync_ok" -eq 1 ]; then echo "✓ $repo (diagrams)"; fi
   fi
 done
 
 echo ""
+if [ "$sync_failed" -eq 1 ]; then
+  echo "Vault sync FINISHED WITH ERRORS — see ✗ lines above. Vault may be stale." >&2
+  exit 1
+fi
 echo "Vault sync complete. Syncthing will propagate to Windows."

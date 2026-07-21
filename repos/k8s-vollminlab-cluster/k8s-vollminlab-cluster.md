@@ -9,6 +9,7 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - [[repos/k8s-vollminlab-cluster/docs/cluster-reference|Cluster Reference]] — versions, values, resource limits, network policies
 - [[cluster-roadmap|Roadmap]] — planned work
 - [[repos/k8s-vollminlab-cluster/docs/non-gitops-inventory|Non-GitOps Inventory]] — manually managed resources
+- [[repos/k8s-vollminlab-cluster/docs/authentik-design|Authentik SSO Design]] — Authentik deployment design and integration
 
 ## Runbooks
 
@@ -23,6 +24,7 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 ## Incidents
 
 - [[repos/k8s-vollminlab-cluster/docs/incidents/2026-04-05-external-dns-kyverno-outage|2026-04-05 External DNS + Kyverno Outage]]
+- [[repos/k8s-vollminlab-cluster/docs/incidents/2026-04-20-external-dns-pihole-instability|2026-04-20 External DNS + Pi-hole Instability]]
 
 ## Key facts
 
@@ -31,3 +33,14 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - Worker nodes provisioned via VMDeployTools
 - Branch protection + CI gates managed by github-admin
 - See [[Home]] for integration map
+
+
+
+
+## Unlisted Docs
+
+- [[repos/k8s-vollminlab-cluster/docs/superpowers/plans/audiobookshelf|Audiobookshelf Implementation Plan]]
+- [[repos/k8s-vollminlab-cluster/docs/superpowers/plans/observability-stack|Observability Stack Implementation Plan]]
+- [[repos/k8s-vollminlab-cluster/docs/superpowers/plans/observability-enhancement|Observability Enhancement Implementation Plan]]
+- [[repos/k8s-vollminlab-cluster/docs/superpowers/specs/observability-stack-design|Observability Stack Design]]
+- [[repos/k8s-vollminlab-cluster/docs/superpowers/specs/jellyfin-design|Jellyfin Deployment Design]]

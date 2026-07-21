@@ -22,7 +22,7 @@ set -euo pipefail
 
 GRAPH_JSON="$HOME/repos/vollminlab/homelab-obsidian-vault/.obsidian/graph.json"
 
-GROUPS='[
+COLOR_GROUPS='[
   {"query":"path:Home.md OR path:CLAUDE.md OR path:memory.md","color":{"a":1,"rgb":16766720}},
   {"query":"path:repos/k8s-vollminlab-cluster/k8s-vollminlab-cluster OR path:repos/homelab-infrastructure/homelab-infrastructure OR path:repos/VMDeployTools/VMDeployTools OR path:repos/pihole-flask-api/pihole-flask-api OR path:repos/github-admin/github-admin OR path:repos/groupme_exporter/groupme_exporter OR path:repos/masters-league/masters-league OR path:repos/shlink-ingress-controller/shlink-ingress-controller OR path:repos/homelab-obsidian-vault/homelab-obsidian-vault","color":{"a":1,"rgb":16711680}},
   {"query":"path:repos/k8s-vollminlab-cluster/","color":{"a":1,"rgb":2062260}},
@@ -39,10 +39,11 @@ GROUPS='[
 # Check if colorGroups is actually an array with the right number of entries
 # (Obsidian resets it to the integer 1000 when it overwrites the file)
 current_count=$(jq 'if (.colorGroups | type) == "array" then (.colorGroups | length) else 0 end' "$GRAPH_JSON" 2>/dev/null || echo 0)
+current_orphans=$(jq '.showOrphans // true' "$GRAPH_JSON" 2>/dev/null || echo true)
 
-if [ "$current_count" -lt 11 ]; then
+if [ "$current_count" -lt 11 ] || [ "$current_orphans" = "true" ]; then
   tmp=$(mktemp)
-  jq --argjson groups "$GROUPS" '.colorGroups = $groups' "$GRAPH_JSON" > "$tmp"
+  jq --argjson groups "$COLOR_GROUPS" '.colorGroups = $groups | .showOrphans = false' "$GRAPH_JSON" > "$tmp"
   mv "$tmp" "$GRAPH_JSON"
-  echo "$(date): graph colors enforced (was $current_count groups)"
+  echo "$(date): graph colors enforced (was $current_count groups, showOrphans was $current_orphans)"
 fi
