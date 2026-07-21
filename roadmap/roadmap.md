@@ -26,6 +26,30 @@ Replace Calico CNI with Cilium. Manual operation — CNI changes cannot go throu
 - Prerequisite: observability stack (need visibility during migration)
 - High risk — requires cluster downtime planning
 
+### Obsidian sync architecture (self-hosted LiveSync)
+
+**Goal:** eliminate Obsidian Sync subscription and Windows PC as sync bridge. Make vault accessible from any device without depending on a user machine being on.
+
+**Target architecture:**
+```
+devsbx01 cron (git pull each repo + rsync docs)
+    ↓ Syncthing
+obsidian-sync VM (lightweight Linux, Obsidian + Xvfb + LiveSync plugin)
+    ↓ LiveSync
+CouchDB (K8s cluster)
+    ↑↓ LiveSync plugin
+All clients (Windows, Mac, iPhone, iPad)
+```
+
+**Near-term prerequisite (do this now regardless):**
+- [ ] Add `git pull` for each repo to `sync-docs-to-vault.sh` before the rsync step — currently vault only sees what's on disk on devsbx01, not latest pushed commits
+
+**To flesh out:**
+- [ ] CouchDB deployment in K8s (livesync has a setup guide)
+- [ ] obsidian-sync VM spec — how lightweight can it go, resource allocation
+- [ ] LiveSync external access strategy (ingress + auth, or VPN-only for mobile)
+- [ ] Migration plan off Obsidian Sync
+
 ### Obsidian documentation build-out
 - ✅ Vault structure and Syncthing sync
 - ✅ Docs for pihole-flask-api, github-admin, VMDeployTools
