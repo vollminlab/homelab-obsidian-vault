@@ -70,7 +70,18 @@ inject_backlink() {
   local tmp
   tmp=$(mktemp)
   local heading_line
-  heading_line=$(grep -n "^#" "$file" | head -1 | cut -d: -f1 || echo "0")
+  # -m1 rather than `| head -1`: head exits after one line, so grep's next write
+  # takes SIGPIPE. Under `set -o pipefail` that fails the pipeline and fires the
+  # `|| echo "0"` fallback *after* the real line number was captured, making
+  # heading_line the two-line value "1 0". `[ "1 0" -gt 0 ]` then errors, and
+  # since `set -e` is exempt inside `if`, it silently takes the else branch and
+  # prepends the backlink above the heading instead of below it.
+  #
+  # Latent, not active: grep only blocks once its matches exceed the 64KB pipe
+  # buffer — ~4000 heading lines in one file. The largest doc here has 18. This
+  # is a correctness fix so the failure can't appear later. -m1 makes grep stop
+  # at the first match itself, so nothing is left to write and no signal fires.
+  heading_line=$(grep -n -m1 "^#" "$file" | cut -d: -f1 || echo "0")
 
   if [ "$heading_line" -gt 0 ]; then
     awk -v line="$heading_line" -v link="← [[$repo]]" \
