@@ -12,6 +12,7 @@ Central index and infrastructure reference for the vollminlab homelab.
 - [[pihole-flask-api]] — Pi-hole DNS management REST API
 - [[github-admin]] — GitHub org configuration
 - [[shlink-ingress-controller]] — Kubernetes ingress controller for Shlink
+- [[longhorn-rebalancing-controller]] — byte-aware Longhorn replica rebalancer
 - [[homelab-obsidian-vault]] — this vault
 
 ### Side projects
@@ -118,4 +119,8 @@ Longhorn — replica count 3. Every PVC requires 3× its size in free Longhorn s
 
 ## Secrets management
 
-All secrets in 1Password (Homelab vault). Kubernetes secrets via SealedSecrets (bitnami). Sealing key backed up in 1Password as "Sealed Secrets Sealing Key".
+All secrets live in 1Password (Homelab vault). Kubernetes Secrets are materialized from it by the External Secrets Operator via 1Password Connect — the repos hold only `ExternalSecret` resources that reference vault items by name, never secret values.
+
+SealedSecrets is retired; the controller was removed 2026-05-31 and the sealing key is no longer part of any recovery path.
+
+**The DR root secret is the `onepassword-connect` Secret** (`1password-credentials.json` + `token`) in the `1password` namespace. It is deliberately not Flux-managed — ESO cannot read 1Password without it, so on a rebuilt cluster it must be applied *before* Flux bootstrap. Bootstrap order: control plane → Calico CNI → apply `onepassword-connect` → bootstrap Flux.
