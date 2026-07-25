@@ -42,6 +42,7 @@ repos=(
   masters-league
   shlink-ingress-controller
   longhorn-rebalancing-controller
+  vollmint
   homelab-obsidian-vault
 )
 

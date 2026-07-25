@@ -19,6 +19,7 @@ Central index and infrastructure reference for the vollminlab homelab.
 
 - [[groupme_exporter]] — GroupMe chat export tool
 - [[masters-league]] — Masters Tournament fantasy golf league viewer
+- [[vollmint]] — household budget tracker (SimpleFIN + Venmo CSV)
 
 ## Vault
 
