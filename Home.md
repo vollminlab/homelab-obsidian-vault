@@ -20,6 +20,7 @@ Central index and infrastructure reference for the vollminlab homelab.
 - [[groupme_exporter]] — GroupMe chat export tool
 - [[masters-league]] — Masters Tournament fantasy golf league viewer
 - [[vollmint]] — household budget tracker (SimpleFIN + Venmo CSV)
+- [[clipbridge]] — paste a Windows screenshot into a remote Claude Code session
 
 ## Vault
 

@@ -43,6 +43,7 @@ repos=(
   shlink-ingress-controller
   longhorn-rebalancing-controller
   vollmint
+  clipbridge
   homelab-obsidian-vault
 )
 
