@@ -18,6 +18,7 @@
 #   shlink-ingress-controller   #EC407A  pink
 #   longhorn-rebalancing-...    #607D8B  blue grey (only desaturated colour — stays distinct)
 #   vollmint                    #BCBD22  olive
+#   clipbridge                  #3949AB  indigo
 #   homelab-obsidian-vault      #9C27B0  deep purple (Obsidian brand)
 
 set -euo pipefail
@@ -26,7 +27,7 @@ GRAPH_JSON="$HOME/repos/vollminlab/homelab-obsidian-vault/.obsidian/graph.json"
 
 COLOR_GROUPS='[
   {"query":"path:Home.md OR path:CLAUDE.md OR path:memory.md","color":{"a":1,"rgb":16766720}},
-  {"query":"path:repos/k8s-vollminlab-cluster/k8s-vollminlab-cluster OR path:repos/homelab-infrastructure/homelab-infrastructure OR path:repos/VMDeployTools/VMDeployTools OR path:repos/pihole-flask-api/pihole-flask-api OR path:repos/github-admin/github-admin OR path:repos/groupme_exporter/groupme_exporter OR path:repos/masters-league/masters-league OR path:repos/shlink-ingress-controller/shlink-ingress-controller OR path:repos/longhorn-rebalancing-controller/longhorn-rebalancing-controller OR path:repos/vollmint/vollmint OR path:repos/homelab-obsidian-vault/homelab-obsidian-vault","color":{"a":1,"rgb":16711680}},
+  {"query":"path:repos/k8s-vollminlab-cluster/k8s-vollminlab-cluster OR path:repos/homelab-infrastructure/homelab-infrastructure OR path:repos/VMDeployTools/VMDeployTools OR path:repos/pihole-flask-api/pihole-flask-api OR path:repos/github-admin/github-admin OR path:repos/groupme_exporter/groupme_exporter OR path:repos/masters-league/masters-league OR path:repos/shlink-ingress-controller/shlink-ingress-controller OR path:repos/longhorn-rebalancing-controller/longhorn-rebalancing-controller OR path:repos/vollmint/vollmint OR path:repos/clipbridge/clipbridge OR path:repos/homelab-obsidian-vault/homelab-obsidian-vault","color":{"a":1,"rgb":16711680}},
   {"query":"path:repos/k8s-vollminlab-cluster/","color":{"a":1,"rgb":2062260}},
   {"query":"path:repos/homelab-infrastructure/","color":{"a":1,"rgb":2924588}},
   {"query":"path:repos/VMDeployTools/","color":{"a":1,"rgb":16744206}},
@@ -37,6 +38,7 @@ COLOR_GROUPS='[
   {"query":"path:repos/shlink-ingress-controller/","color":{"a":1,"rgb":15483002}},
   {"query":"path:repos/longhorn-rebalancing-controller/","color":{"a":1,"rgb":6323595}},
   {"query":"path:repos/vollmint/","color":{"a":1,"rgb":12369186}},
+  {"query":"path:repos/clipbridge/","color":{"a":1,"rgb":3754411}},
   {"query":"path:repos/homelab-obsidian-vault/ OR path:architecture/ OR path:roadmap/ OR path:runbooks/ OR path:diagrams/","color":{"a":1,"rgb":10233776}}
 ]'
 
@@ -45,7 +47,7 @@ COLOR_GROUPS='[
 current_count=$(jq 'if (.colorGroups | type) == "array" then (.colorGroups | length) else 0 end' "$GRAPH_JSON" 2>/dev/null || echo 0)
 current_orphans=$(jq '.showOrphans // true' "$GRAPH_JSON" 2>/dev/null || echo true)
 
-if [ "$current_count" -lt 13 ] || [ "$current_orphans" = "true" ]; then
+if [ "$current_count" -lt 14 ] || [ "$current_orphans" = "true" ]; then
   tmp=$(mktemp)
   jq --argjson groups "$COLOR_GROUPS" '.colorGroups = $groups | .showOrphans = false' "$GRAPH_JSON" > "$tmp"
   mv "$tmp" "$GRAPH_JSON"
