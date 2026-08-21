@@ -12,6 +12,7 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - [[repos/k8s-vollminlab-cluster/docs/authentik-design|Authentik SSO Design]] — Authentik deployment design and integration
 - [[repos/k8s-vollminlab-cluster/docs/cloudflare-management|Cloudflare Management]] — all Cloudflare resources are Terraform-managed; never edit in the dashboard
 - [[repos/k8s-vollminlab-cluster/docs/security-audit|Security & Improvement Audit]] — 2026-05-29 full repo + live cluster audit (closed 2026-06-04)
+- [[repos/k8s-vollminlab-cluster/docs/vm-lt-metrics-storage-path|vm-lt-metrics Storage Path]] — VictoriaMetrics cold tier: ~13 months of history on TrueNAS spinning disk instead of replicated Longhorn SSD
 
 ## Runbooks
 
@@ -27,6 +28,10 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/eso-token-rotation|ESO Token Rotation]] — rotate the 1Password Connect access token ESO reads with
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/cnpg-password-rotation|CNPG Password Rotation]] — coordinated rotation for create-once (`refreshInterval: "0"`) ExternalSecrets
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/harbor-dockerhub-proxy-cache|Harbor Docker Hub Proxy Cache]] — docker.io pull-through cache that dodges the Hub rate limit
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/ci-runner-breakglass|CI Runner Break-Glass]] — merging a PR when the self-hosted ARC runners are down
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/pvc-storageclass-migration|PVC StorageClass Migration]] — `storageClassName` is immutable on a bound PVC; create a new claim and copy across
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/vcenter-metrics-credential-rotation|vCenter Metrics Credential Rotation]] — rotate `prometheus-exporter@vsphere.local` before the 90-day SSO expiry fires `TargetDown`
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/tofu-provider-bumps|Terraform Provider Bumps]] — why a Renovate provider PR is not just "merge it" under `approvePlan: auto`
 
 ## Incidents
 
