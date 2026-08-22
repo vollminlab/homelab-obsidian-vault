@@ -14,6 +14,7 @@ Terraform, VM provisioning, and network infrastructure configuration for the vol
 - [[repos/homelab-infrastructure/docs/ssh-setup|SSH Setup]] — SSH config, key management across admin machines
 - [[repos/homelab-infrastructure/docs/syncthing|Syncthing Setup]] — vault sync between devsbx01 and Windows
 - [[repos/homelab-infrastructure/docs/credential-rotation|Credential Rotation Guide]] — credential expiration tracking and rotation procedures
+- [[repos/homelab-infrastructure/docs/ups-graceful-shutdown|UPS Graceful Shutdown]] — low-battery shutdown sequence; `shutdowncmd` armed, trigger still `LOWBATT`
 
 ## Key facts
 
