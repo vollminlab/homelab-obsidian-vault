@@ -17,6 +17,7 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 ## Runbooks
 
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/flux-templates|Flux Templates]] — copy-paste HelmRelease, HelmRepository, OCIRepository YAML
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/longhorn-stale-tgt-targets|Longhorn stale iSCSI targets]] — restart the workload first so Longhorn deletes the empty instance-manager; no drains needed
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/kyverno-recovery|Kyverno Recovery]] — webhook block recovery, stuck HelmRelease recovery
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/external-dns|External DNS]] — upsert-only constraint, Pi-hole DNS restore
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/homepage|Homepage]] — auto-discovery annotations, widget config
