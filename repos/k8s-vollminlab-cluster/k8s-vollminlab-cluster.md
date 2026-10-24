@@ -34,6 +34,7 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/vcenter-metrics-credential-rotation|vCenter Metrics Credential Rotation]] — rotate `prometheus-exporter@vsphere.local` before the 90-day SSO expiry fires `TargetDown`
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/tofu-provider-bumps|Terraform Provider Bumps]] — why a Renovate provider PR is not just "merge it" under `approvePlan: auto`
 - [[repos/k8s-vollminlab-cluster/docs/runbooks/audiobook-intake|Audiobook Intake]] — CronJob that files FileBrowser audiobook uploads into Audiobookshelf; fixing `_needs-review`
+- [[repos/k8s-vollminlab-cluster/docs/runbooks/triage-agent|Triage agent]] — alerts and a nightly sweep become private root-cause diagnoses; allowlisted fix classes can open a PR, a human always merges
 
 ## Incidents
 
