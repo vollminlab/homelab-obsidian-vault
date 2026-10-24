@@ -47,7 +47,3 @@ GitOps-managed Kubernetes cluster using Flux CD. All workloads are Helm-based un
 - Worker nodes provisioned via VMDeployTools
 - Branch protection + CI gates managed by github-admin
 - See [[Home]] for integration map
-
-## Unlisted Docs
-
-- [[repos/k8s-vollminlab-cluster/docs/runbooks/triage-agent|Triage agent]]
