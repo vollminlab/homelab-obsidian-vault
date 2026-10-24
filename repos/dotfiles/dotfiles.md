@@ -14,5 +14,5 @@ Shell and terminal setup for devsbx01: bash/ble.sh/fzf, git, herdr, the herdr se
 - Private repo; `./dotfiles diff | deploy | capture`, `./bootstrap.sh` for a fresh Debian/Ubuntu box
 - herdr replaced tmux on 2026-10-24; `claude-yolo` / `claude-resume` open herdr workspaces
 - `herdr-snapshot.timer` (systemd user, linger on) captures every live herdr session every 10 minutes to `~/.herdr-snapshots/`
-- Windows side: `windows/terminal/install.ps1` installs a profile fragment running `wsl bash -lic "mosh devsbx01 -- /home/vollmin/.local/bin/herdr"`
+- Windows side: `windows/terminal/install.ps1` installs a profile fragment running `wsl bash -lic "ssh -t devsbx01 /home/vollmin/.local/bin/herdr"` (ssh, not mosh: mosh corrupts the herdr screen)
 - See [[Home]] for integration map
