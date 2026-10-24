@@ -21,6 +21,8 @@ This vault is the living documentation layer for the vollminlab homelab. It mirr
 | `masters-league` | Fantasy golf league tools | `docs/` |
 | `shlink-ingress-controller` | K8s ingress controller for Shlink | `docs/` |
 | `longhorn-rebalancing-controller` | Byte-aware Longhorn replica rebalancer | `docs/` |
+| `claude-env` | Master copy of `~/.claude` (private) | `docs/` |
+| `dotfiles` | Shell, herdr, terminal setup for devsbx01 (private) | `docs/` |
 | `homelab-obsidian-vault` | This vault | `scripts/`, `architecture/`, `roadmap/`, `runbooks/`, `diagrams/` |
 
 ## Vault structure
