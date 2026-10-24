@@ -70,14 +70,14 @@ Cross-repo wikilinks between repo index files are intentionally avoided — they
 
 ## Graph colors
 
-Repo colors are enforced by `scripts/enforce-graph-colors.sh`, which rewrites `.obsidian/graph.json` with `jq`, setting `.colorGroups` to a fixed **13-entry** array and `.showOrphans` to `false`. Obsidian overwrites that file on interaction — and when it does, it replaces the `colorGroups` array with the integer `1000`, which is why the guard tests the JSON *type*, not just the length.
+Repo colors are enforced by `scripts/enforce-graph-colors.sh`, which rewrites `.obsidian/graph.json` with `jq`, setting `.colorGroups` to a fixed **17-entry** array and `.showOrphans` to `false`. Obsidian overwrites that file on interaction — and when it does, it replaces the `colorGroups` array with the integer `1000`, which is why the guard tests the JSON *type*, not just the length.
 
 Groups are path queries, not file lists, so new docs pick up their repo's colour with no config change.
 
 | Group | Repo / scope | Color | Hex |
 | --- | --- | --- | --- |
 | 1 | Home / CLAUDE / memory | Gold | #FFD700 |
-| 2 | **Repo index files (all eleven repos)** | **Red** | **#FF0000** |
+| 2 | **Repo index files (all fifteen repos)** | **Red** | **#FF0000** |
 | 3 | k8s-vollminlab-cluster | Steel Blue | #1F77B4 |
 | 4 | homelab-infrastructure | Green | #2CA02C |
 | 5 | VMDeployTools | Orange | #FF7F0E |
@@ -88,7 +88,11 @@ Groups are path queries, not file lists, so new docs pick up their repo's colour
 | 10 | shlink-ingress-controller | Pink | #EC407A |
 | 11 | longhorn-rebalancing-controller | Blue Grey | #607D8B |
 | 12 | vollmint | Olive | #BCBD22 |
-| 13 | homelab-obsidian-vault + vault-native dirs | Deep Purple | #9C27B0 |
+| 13 | slate-builder | Deep Orange | #D84315 |
+| 14 | clipbridge | Indigo | #3949AB |
+| 15 | claude-env | Terracotta | #D97757 |
+| 16 | dotfiles | Bright Green | #00E676 |
+| 17 | homelab-obsidian-vault + vault-native dirs | Deep Purple | #9C27B0 |
 
 The repo index file group is listed ahead of the path-prefix groups it needs to override, giving a clear gold → red → colored hierarchy in the graph.
 
@@ -132,7 +136,7 @@ repos=(
 )
 ```
 
-The array currently holds **eleven** repos: `k8s-vollminlab-cluster`, `homelab-infrastructure`, `groupme_exporter`, `pihole-flask-api`, `github-admin`, `VMDeployTools`, `masters-league`, `shlink-ingress-controller`, `longhorn-rebalancing-controller`, `vollmint`, `homelab-obsidian-vault`.
+The array currently holds **fifteen** repos: `k8s-vollminlab-cluster`, `homelab-infrastructure`, `groupme_exporter`, `pihole-flask-api`, `github-admin`, `VMDeployTools`, `masters-league`, `shlink-ingress-controller`, `longhorn-rebalancing-controller`, `vollmint`, `slate-builder`, `clipbridge`, `claude-env`, `dotfiles`, `homelab-obsidian-vault`.
 
 If any docs need renaming, add to the `renames` array:
 ```bash
@@ -189,7 +193,7 @@ Then increment the threshold check:
 if [ "$current_count" -lt 13 ] || [ "$current_orphans" = "true" ]; then   # was 12, now 13
 ```
 
-**The threshold is the step people forget.** `-lt 13` is the current repo count (eleven) plus the gold and red groups. Adding a repo adds one group, so the comparison must be incremented in the same commit — otherwise the guard is satisfied by the old array and the new colour is never applied.
+**The threshold is the step people forget.** `-lt 17` is the current repo count (fifteen) plus the gold and red groups. Adding a repo adds one group, so the comparison must be incremented in the same commit — otherwise the guard is satisfied by the old array and the new colour is never applied.
 
 A repo in `repos=()` with no colour group syncs but renders in the graph's default grey; a colour group added without bumping the threshold is never applied at all. Both fail silently.
 

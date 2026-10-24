@@ -45,6 +45,8 @@ repos=(
   vollmint
   slate-builder
   clipbridge
+  claude-env
+  dotfiles
   homelab-obsidian-vault
 )
 

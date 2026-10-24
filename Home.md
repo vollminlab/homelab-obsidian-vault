@@ -14,6 +14,8 @@ Central index and infrastructure reference for the vollminlab homelab.
 - [[shlink-ingress-controller]] — Kubernetes ingress controller for Shlink
 - [[longhorn-rebalancing-controller]] — byte-aware Longhorn replica rebalancer
 - [[homelab-obsidian-vault]] — this vault
+- [[claude-env]] — master copy of the Claude Code environment (~/.claude)
+- [[dotfiles]] — devsbx01 shell, herdr and Windows Terminal setup
 
 ### Side projects
 
